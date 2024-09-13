@@ -15,6 +15,8 @@
 #define DIALOG_HEIGHT 3
 #define DIALOG_WIDTH COLS
 
+#define TITLE_COLOR 1
+
 typedef struct{
   int x,y;
 }Point;
@@ -33,7 +35,7 @@ typedef struct{
   Win main;
   Win dialog;
   Point user_input_start;
-  char  token;
+  char  input;
 }Interface;
 
 void set_curses_options();
@@ -42,11 +44,15 @@ Interface* create_interface();
 void set_main_win(Interface *new);
 void set_dialog_win(Interface *new);
 void set_input_start(Interface *interface);
+void set_content(Interface *new);
 
 Point give_window_start_point(int y_wanted, int x_wanted);
 Dimensions give_dimensions(int h, int w);
 Point give_input_start();
 WINDOW* create_window(Point win_start, Dimensions dim);
 void seperate_input_line(Point input_line_start);
+void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
+
+
 
 #endif // MAIN_H_

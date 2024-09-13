@@ -1,6 +1,7 @@
 #include "../interface.h"
 #include <curses.h>
 #include <stdlib.h>
+#include <string.h>
 
 //-fsanitize=address -fsanitize=undefined
 void set_curses_options(){
@@ -17,6 +18,7 @@ Interface* create_interface(){
 
   set_main_win(new);
   set_dialog_win(new);
+  set_content(new);
   set_input_start(new);
 
   refresh();
@@ -28,6 +30,7 @@ void set_main_win(Interface *new){
   new->main.dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
   new->main.ptr = create_window(new->main.upper_left_corner, new->main.dimensions);
 }
+
 void set_dialog_win(Interface *new){
   new->dialog.upper_left_corner = give_window_start_point(DIALOG_Y, DIALOG_X);
   new->dialog.dimensions = give_dimensions(DIALOG_HEIGHT, DIALOG_WIDTH);
@@ -61,3 +64,37 @@ WINDOW* create_window(Point win_start, Dimensions dim){
   return new_win;
 }
 
+////////////////////////////////////////////////
+//////////////FILL///////////////////////////////
+////////////////////////////////////////////////
+
+void set_content(Interface *new){
+  start_color();
+  init_pair(TITLE_COLOR, COLOR_GREEN, COLOR_BLACK);
+  print_in_middle(new->main.ptr, 1,
+                  0, new->main.dimensions.width,
+                  "Tea shop", COLOR_PAIR(TITLE_COLOR));
+  wrefresh(new->main.ptr);
+
+}
+
+void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color){
+  int length, x, y;
+  float temp;
+
+  getyx(win, y, x);
+  if(startx != 0)
+    x = startx;
+  if(starty != 0)
+    y = starty;
+  if(width == 0)
+    width = 80;
+
+  length = strlen(string);
+  temp = (width - length)/ 2;
+  x = startx + (int)temp;
+  wattron(win, color);
+  mvwprintw(win, y, x, "%s", string);
+  wattroff(win, color);
+  refresh();
+}

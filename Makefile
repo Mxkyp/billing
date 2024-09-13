@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS= -Wall -Wextra
 SRC=./src/
-LIBS=-lncurses
+LIBS=-lncurses -lmenu
 
 main.o: $(SRC)main.c customer.h product.h
 	$(CC) $(CFLAGS) -c $(SRC)main.c
@@ -14,6 +14,8 @@ product.o: $(SRC)product.c product.h
 
 interface.o: $(SRC)interface.c interface.h
 	$(CC) $(CFLAGS) -c $(SRC)interface.c
+test.o: $(SRC)test.c
+	$(CC) $(CFLAGS) -c $(SRC)test.c
 #=====================================================
 
 billing: main.o customer.o product.o
@@ -21,5 +23,8 @@ billing: main.o customer.o product.o
 
 bill: main.o interface.o
 	$(CC) $(CFLAGS) -o bill.x main.o interface.o $(LIBS)
+
+test: test.o
+	$(CC) $(CFLAGS) -o test.x test.o $(LIBS)
 clean:
 	rm *.o *.a *.x
