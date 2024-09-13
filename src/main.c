@@ -6,12 +6,17 @@
 #include <stdlib.h>
 
 int main(void){
-  initscr();
-  refresh();
+  set_curses_options();
   Interface* menu = create_interface();
 
-
-  sleep(5);
+  char c;
+  while((c =getchar()) != 'p'){
+    addch(c);
+    refresh();
+  }
   free(menu);
   endwin();
+}
+
+void input(){
 }
