@@ -7,16 +7,14 @@
 
 int main(void){
   set_curses_options();
-  Interface* menu = create_interface();
+  Interface* interface = create_interface();
 
   char c;
   while((c =getchar()) != 'p'){
     addch(c);
     refresh();
   }
-  free(menu);
+  free(interface);
   endwin();
 }
 
-void input(){
-}
