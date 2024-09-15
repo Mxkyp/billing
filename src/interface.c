@@ -3,9 +3,10 @@
 #include <menu.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 //-fsanitize=address -fsanitize=undefined
-void set_curses_options(){
+void initalize_curses_options(){
   initscr();
   echo();
   keypad(stdscr, true);
@@ -14,7 +15,61 @@ void set_curses_options(){
   refresh();
 }
 
-Interface* create_interface(){
+void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor){
+  noecho();
+  cbreak();
+  curs_set(0);
+
+  if(want_echo){
+   new->opt.echo = true;
+   echo();
+  }
+  if(want_keypad){
+    new->opt.keypad = true;
+    keypad(new->ptr, TRUE);
+  }
+  if(want_line_buffering){
+    new->opt.line_buffering = true;
+   nocbreak();
+  }
+  if(want_cursor){
+    new->opt.cursor = true;
+    curs_set(1);
+  }
+}
+
+void switch_input_options(Win win){
+  if(win.opt.echo){
+   echo();
+  }
+  else if(win.opt.echo == false){
+    noecho();
+  }
+
+  if(win.opt.keypad){
+    keypad(win.ptr, TRUE);
+  }
+  else if(win.opt.keypad == false){
+    keypad(win.ptr, FALSE);
+  }
+
+  if(win.opt.line_buffering){
+   cbreak();
+  }
+  else if(win.opt.line_buffering == false){
+   cbreak();
+  }
+
+  if(win.opt.cursor){
+    curs_set(1);
+  }
+  else if(win.opt.cursor == false){
+    curs_set(0);
+  }
+}
+
+
+Interface* create_interface(void){
   Interface* new = malloc(sizeof(*new));
 
   set_main_win(new);
@@ -31,6 +86,9 @@ void set_main_win(Interface *new){
   new->main.dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
   new->main.ptr = create_window(new->main.upper_left_corner, new->main.dimensions);
   new->main.menu = create_menu(new->main);
+
+  set_input_options(&new->dialog, true, true, true, true);
+  set_input_options(&new->main, false, true,false,false);
 }
 
 void set_dialog_win(Interface *new){
@@ -43,7 +101,6 @@ void set_input_start(Interface *interface){
   interface->user_input_start.y = INPUT_Y;
   interface->user_input_start.x = INPUT_X;
 
-  move(interface->user_input_start.y, interface->user_input_start.x);
 }
 
 Point give_window_start_point(int y_wanted, int x_wanted){
@@ -102,6 +159,7 @@ MENU *create_menu(Win main){ // check for null
 
   return my_menu;
 }
+
 
 
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color){

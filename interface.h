@@ -27,9 +27,14 @@ typedef struct{
 }Dimensions;
 
 typedef struct{
+  bool echo, keypad, line_buffering, cursor;
+}InputOptions;
+
+typedef struct{
   Point upper_left_corner;
   Dimensions dimensions;
   WINDOW *ptr;
+  InputOptions opt;
   MENU *menu;
 }Win;
 
@@ -40,7 +45,7 @@ typedef struct{
   char  input;
 }Interface;
 
-void set_curses_options();
+void initalize_curses_options();
 Interface* create_interface();
 MENU *create_menu(Win main); // check for null
 
@@ -49,6 +54,8 @@ void set_dialog_win(Interface *new);
 void set_input_start(Interface *new);
 void set_content(Interface *new);
 
+void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor);
+void switch_input_options(Win win);
 Point give_window_start_point(int y_wanted, int x_wanted);
 Dimensions give_dimensions(int h, int w);
 Point give_input_start();

@@ -7,14 +7,22 @@
 #include <stdlib.h>
 
 int main(void){
-  set_curses_options();
+  initalize_curses_options();
   Interface* interface = create_interface();
+  int c;
 
-  char c;
-  while((c =getchar()) != 'p'){
-    addch(c);
-    refresh();
-  }
+keypad(interface->main.ptr, TRUE);
+while((c = wgetch(interface->main.ptr)) != KEY_F(1))
+	{   switch(c)
+	    {	case KEY_DOWN:
+		        menu_driver(interface->main.menu, REQ_DOWN_ITEM);
+				break;
+			case KEY_UP:
+				menu_driver(interface->main.menu, REQ_UP_ITEM);
+				break;
+		};
+	}
+
   free(interface);
   endwin();
 }
