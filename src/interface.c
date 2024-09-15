@@ -1,5 +1,6 @@
 #include "../interface.h"
 #include <curses.h>
+#include <menu.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -29,6 +30,7 @@ void set_main_win(Interface *new){
   new->main.upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
   new->main.dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
   new->main.ptr = create_window(new->main.upper_left_corner, new->main.dimensions);
+  new->main.menu = create_menu(new->main);
 }
 
 void set_dialog_win(Interface *new){
@@ -73,10 +75,34 @@ void set_content(Interface *new){
   init_pair(TITLE_COLOR, COLOR_GREEN, COLOR_BLACK);
   print_in_middle(new->main.ptr, 1,
                   0, new->main.dimensions.width,
-                  "Tea shop", COLOR_PAIR(TITLE_COLOR));
+                  "Shop", COLOR_PAIR(TITLE_COLOR));
   wrefresh(new->main.ptr);
 
 }
+
+MENU *create_menu(Win main){ // check for null
+  const int num_choices = 4;
+  const char *choices[] = { "Shop", "Check Cart", "Checkout", "Exit" };
+  ITEM *items[num_choices + 1];
+
+  for(int i = 0; i < num_choices; i++){
+    items[i] = new_item(choices[i],NULL);
+  }
+
+  items[num_choices] = (ITEM *)NULL;
+
+  MENU* my_menu = new_menu(items);
+  set_menu_win(my_menu, main.ptr);
+  set_menu_sub(my_menu,derwin(main.ptr, main.dimensions.height-5, 12,
+                            4, 7));
+  set_menu_mark(my_menu,"+");
+
+  post_menu(my_menu);
+  wrefresh(main.ptr);
+
+  return my_menu;
+}
+
 
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color){
   int length, x, y;

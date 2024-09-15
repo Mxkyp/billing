@@ -1,8 +1,9 @@
 #ifndef INTERFACE_H_
 #define INTERFACE_H_
 #include <curses.h>
+#include <menu.h>
 
-#define INTERFACE_HEIGHT 24
+#define INTERFACE_HEIGHT 12
 #define INTERFACE_WIDTH  26
 
 #define MAIN_Y (LINES - INTERFACE_HEIGHT)/2
@@ -29,6 +30,7 @@ typedef struct{
   Point upper_left_corner;
   Dimensions dimensions;
   WINDOW *ptr;
+  MENU *menu;
 }Win;
 
 typedef struct{
@@ -40,17 +42,17 @@ typedef struct{
 
 void set_curses_options();
 Interface* create_interface();
+MENU *create_menu(Win main); // check for null
 
 void set_main_win(Interface *new);
 void set_dialog_win(Interface *new);
-void set_input_start(Interface *interface);
+void set_input_start(Interface *new);
 void set_content(Interface *new);
 
 Point give_window_start_point(int y_wanted, int x_wanted);
 Dimensions give_dimensions(int h, int w);
 Point give_input_start();
 WINDOW* create_window(Point win_start, Dimensions dim);
-void seperate_input_line(Point input_line_start);
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
 
 

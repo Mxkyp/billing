@@ -1,6 +1,7 @@
 #include "../main.h"
 #include "../interface.h"
 #include <curses.h>
+#include <menu.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
