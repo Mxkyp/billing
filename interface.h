@@ -8,12 +8,12 @@
 #define INTERFACE_WIDTH  26
 #define MAIN_Y (LINES - INTERFACE_HEIGHT)/2
 #define MAIN_X (COLS - INTERFACE_WIDTH)/2
-#define INPUT_X 1
-#define INPUT_Y LINES - 1
-#define DIALOG_Y LINES - 2
-#define DIALOG_X 0
-#define DIALOG_HEIGHT 3
-#define DIALOG_WIDTH COLS
+#define INPUT_START_X 1
+#define INPUT_START_Y LINES - 1
+#define INPUT_Y LINES - 2
+#define INPUT_X 0
+#define INPUT_HEIGHT 3
+#define INPUT_WIDTH COLS
 
 //Specific numbers
 #define TITLE_COLOR 1
@@ -46,22 +46,17 @@ typedef struct{
 }Win;
 
 typedef struct{
-  Win main;
-  Win dialog;
-  Point user_input_start;
-  int  input;
-}Interface;
+ Point user_input_start;
+ Win win;
+ int input;
+}InputField;
 
 void initalize_curses_options();
-Interface* create_interface();
 
-/* sets main window attributes to give the wanted look*/
-void set_main_win(Interface *new);
-
-/* sets dialog window attributes to give the wanted look*/
-void set_dialog_win(Interface *new);
-void set_input_start(Interface *new);
-void set_content(Interface *new);
+Win* create_main_win(void);
+Win *create_dialog_win(void);
+void set_input_start(InputField* in_field);
+void set_main_content(Win* main);
 void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor);
 
 void switch_input_options(Win win);

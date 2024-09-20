@@ -6,35 +6,46 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 int main(void){
   initalize_curses_options();
-  Interface* interface = create_interface();
-  interface->main.menu = create_main_menu(interface->main);
-  input(interface);
 
-  free_Menu_obj(interface->main.menu);
-  free(interface);
+  Win *main = create_main_win();
+  assert(main); // replace with proper err checking
+  set_main_win(main);
+
+  handle_win_menu(main);
+
+  free_Menu_obj(main->menu);
+  free(main);
   endwin();
 }
 
-void input(Interface *interface){
-  while((interface->input = wgetch(interface->main.ptr)) != KEY_F(2)){
-    switch(interface->input)
+
+void set_main_win(Win *main){
+  set_main_content(main);
+  main->menu = create_main_menu(main);
+}
+
+void handle_win_menu(Win *win){
+  int ch;
+  while((ch = wgetch(win->ptr)) != KEY_F(2)){
+    switch(ch)
 	    {	case KEY_DOWN:
-		        menu_driver(interface->main.menu->ptr, REQ_DOWN_ITEM);
+		        menu_driver(win->menu->ptr, REQ_DOWN_ITEM);
 				break;
 			case KEY_UP:
-				menu_driver(interface->main.menu->ptr, REQ_UP_ITEM);
+				menu_driver(win->menu->ptr, REQ_UP_ITEM);
 				break;
       case ENTER:
         ITEM *cur;
 				void (*p)(ShoppingCart *);
 
-				cur = current_item(interface->main.menu->ptr);
+				cur = current_item(win->menu->ptr);
 				p = item_userptr(cur);
 				p(NULL);
-				pos_menu_cursor(interface->main.menu->ptr);
+				pos_menu_cursor(win->menu->ptr);
 				break;
 		};
 	}

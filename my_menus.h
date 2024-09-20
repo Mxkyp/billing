@@ -7,7 +7,7 @@
 #include <menu.h>
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-Menu *create_main_menu(Win main); // check for null
+Menu *create_main_menu(Win *main); // check for null
 
 void set_items(ITEM *items[], const char *choices[], const int num_choices);
 

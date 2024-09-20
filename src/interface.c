@@ -15,45 +15,50 @@ void initalize_curses_options(){
   refresh();
 }
 
-Interface* create_interface(void){
-  Interface* new = malloc(sizeof(*new));
+Win* create_main_win(void){
+  Win *main = malloc(sizeof(*main));
 
-  set_main_win(new);
-  set_dialog_win(new);
-  set_content(new);
-  set_input_start(new);
+  if(main == NULL){
+    return NULL;
+  }
 
-  refresh();
-  return new;
+  main->upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
+  main->dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
+  main->ptr = create_window(main->upper_left_corner, main->dimensions);
+
+  set_input_options(main, false, true,false,false);
+
+  return main;
 }
 
-void set_main_win(Interface *new){
-  new->main.upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
-  new->main.dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
-  new->main.ptr = create_window(new->main.upper_left_corner, new->main.dimensions);
+Win *create_input_win(void){
+  Win *input = malloc(sizeof(*input));
 
-  set_input_options(&new->dialog, true, true, true, true);
-  set_input_options(&new->main, false, true,false,false);
+  if(input == NULL){
+    return NULL;
+  }
+
+  input->upper_left_corner = give_window_start_point(INPUT_Y, INPUT_X);
+  input->dimensions = give_dimensions(INPUT_HEIGHT, INPUT_WIDTH);
+  input->ptr = create_window(input->upper_left_corner, input->dimensions);
+
+  set_input_options(input, true, true, true, true);
+
+  return input;
 }
 
-void set_dialog_win(Interface *new){
-  new->dialog.upper_left_corner = give_window_start_point(DIALOG_Y, DIALOG_X);
-  new->dialog.dimensions = give_dimensions(DIALOG_HEIGHT, DIALOG_WIDTH);
-  new->dialog.ptr = create_window(new->dialog.upper_left_corner, new->dialog.dimensions);
-}
-
-void set_content(Interface *new){
+void set_main_content(Win* main){
   start_color();
   init_pair(TITLE_COLOR, COLOR_GREEN, COLOR_BLACK);
-  print_in_middle(new->main.ptr, 1,
-                  0, new->main.dimensions.width,
+  print_in_middle(main->ptr, 1,
+                  0,main->dimensions.width,
                   "Shop", COLOR_PAIR(TITLE_COLOR));
-  wrefresh(new->main.ptr);
+  wrefresh(main->ptr);
 }
 
-void set_input_start(Interface *interface){
-  interface->user_input_start.y = INPUT_Y;
-  interface->user_input_start.x = INPUT_X;
+void set_input_start(InputField* in_field){
+  in_field->user_input_start.y = INPUT_START_Y;
+  in_field->user_input_start.x = INPUT_START_X;
 }
 
 Point give_window_start_point(int y_wanted, int x_wanted){

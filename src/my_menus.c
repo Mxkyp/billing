@@ -30,18 +30,18 @@ void free_Menu_obj(Menu *menu){
 }
 
 
-Menu *create_main_menu(Win main){ // check for null
+Menu *create_main_menu(Win *main){ // check for null
   const char *choices[] = { "Shop", "Check Cart", "Checkout", "Exit" };
   const int num_choices = ARRAY_SIZE(choices);
-  WINDOW *subwindow = derwin(main.ptr, main.dimensions.height-5, 12, 4, 7);
+  WINDOW *subwindow = derwin(main->ptr, main->dimensions.height-5, 12, 4, 7);
 
   Menu *menu = create_menu(choices, num_choices);
 
-  set_menu_windows(menu->ptr, main.ptr, subwindow);
+  set_menu_windows(menu->ptr, main->ptr, subwindow);
   set_menu_mark(menu->ptr,"+");
 
   post_menu(menu->ptr);
-  wrefresh(main.ptr);
+  wrefresh(main->ptr);
 
   return menu;
 }

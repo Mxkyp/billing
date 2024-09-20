@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -Wall -Wextra
+CFLAGS= -Wall -Wextra #-fsanitize=address -fsanitize=undefined
 SRC=./src/
 LIBS=-lncurses -lmenu
 
