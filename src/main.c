@@ -1,16 +1,17 @@
 #include "../main.h"
 #include "../interface.h"
 #include "../my_menus.h"
+#include "../cleanup.h"
 #include <curses.h>
 #include <menu.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
+
 int main(void){
   initalize_curses_options();
-
+  atexit(clean);
   Win *main = create_main_win();
   assert(main); // replace with proper err checking
   set_main_win(main);
@@ -19,7 +20,6 @@ int main(void){
 
   free_Menu_obj(main->menu);
   free(main);
-  endwin();
 }
 
 
