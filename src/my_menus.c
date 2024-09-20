@@ -8,7 +8,9 @@
 #include <stdlib.h>
 
 Menu *create_menu(const char *choices[], const int num_choices){
- Menu *menu = malloc(sizeof(*menu) + sizeof(ITEM *) * num_choices);
+ Menu *menu = malloc(sizeof(*menu));
+ menu->items = malloc(sizeof(ITEM*) * (num_choices+1));
+
  if(menu == NULL){
    return NULL;
  }
@@ -19,7 +21,6 @@ Menu *create_menu(const char *choices[], const int num_choices){
   menu->ptr = menu_ptr;
   menu->num_choices = num_choices;
 
-  atexit_add(menu_ptr);
   atexit_add(menu);
 
   return menu;
@@ -73,7 +74,7 @@ void exitt(ShoppingCart *cart){
 void (*menu_function[4])(ShoppingCart *) = {shop, check_cart, checkout, exitt};
 
 
-void set_items(ITEM *items[], const char *choices[], const int num_choices){
+void set_items(ITEM **items, const char *choices[], const int num_choices){
   for(int i = 0; i < num_choices; i++){
     items[i] = new_item(choices[i],NULL);
     set_item_userptr(items[i], menu_function[i]);
@@ -82,6 +83,7 @@ void set_items(ITEM *items[], const char *choices[], const int num_choices){
 
   items[num_choices] = (ITEM *)NULL;
   atexit_add(items[num_choices]);
+  atexit_add(items);
 }
 
 

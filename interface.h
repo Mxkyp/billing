@@ -34,7 +34,7 @@ typedef struct{
 typedef struct{
  MENU *ptr;
  int num_choices;
- ITEM *items[];
+ ITEM **items;
 }Menu;
 
 typedef struct{

@@ -16,10 +16,9 @@ void atexit_add(void *data){
 void clean(void){
     size_t i;
 
-    endwin();
     for (i = 0; i < nclean; i++) {
         free(vclean[i]);
     }
-
     free(vclean);
+    endwin();
 }

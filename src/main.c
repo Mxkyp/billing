@@ -16,15 +16,17 @@ int main(void){
   assert(main); // replace with proper err checking
   set_main_win(main); //debug this
 
-  //handle_win_menu(main);
+  handle_win_menu(main);
 
+  unpost_menu(main->menu->ptr);
+  free_menu(main->menu->ptr);
   return 0;
 }
 
 
 void set_main_win(Win *main){
   set_main_content(main);
-  //main->menu = create_main_menu(main);
+  main->menu = create_main_menu(main);
 }
 
 void handle_win_menu(Win *win){
