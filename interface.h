@@ -32,11 +32,17 @@ typedef struct{
 }InputOptions;
 
 typedef struct{
+ MENU *ptr;
+ int num_choices;
+ ITEM *items[];
+}Menu;
+
+typedef struct{
   Point upper_left_corner;
   Dimensions dimensions;
   WINDOW *ptr;
   InputOptions opt;
-  MENU *menu;
+  Menu *menu;
 }Win;
 
 typedef struct{
@@ -49,7 +55,10 @@ typedef struct{
 void initalize_curses_options();
 Interface* create_interface();
 
+/* sets main window attributes to give the wanted look*/
 void set_main_win(Interface *new);
+
+/* sets dialog window attributes to give the wanted look*/
 void set_dialog_win(Interface *new);
 void set_input_start(Interface *new);
 void set_content(Interface *new);

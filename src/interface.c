@@ -49,7 +49,6 @@ void set_content(Interface *new){
                   0, new->main.dimensions.width,
                   "Shop", COLOR_PAIR(TITLE_COLOR));
   wrefresh(new->main.ptr);
-
 }
 
 void set_input_start(Interface *interface){
