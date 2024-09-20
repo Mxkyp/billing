@@ -1,4 +1,5 @@
 #include "../interface.h"
+#include "../cleanup.h"
 #include <curses.h>
 #include <menu.h>
 #include <stdlib.h>
@@ -27,6 +28,7 @@ Win* create_main_win(void){
   main->ptr = create_window(main->upper_left_corner, main->dimensions);
 
   set_input_options(main, false, true,false,false);
+  atexit_add(main);
 
   return main;
 }
@@ -44,6 +46,7 @@ Win *create_input_win(void){
 
   set_input_options(input, true, true, true, true);
 
+  atexit_add(input);
   return input;
 }
 

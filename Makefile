@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -Wall -Wextra #-fsanitize=address -fsanitize=undefined
+CFLAGS= -g -Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address -fsanitize=undefined -static-libasan
 SRC=./src/
 LIBS=-lncurses -lmenu
 

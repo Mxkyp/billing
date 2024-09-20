@@ -1,6 +1,7 @@
 #include "../my_menus.h"
 #include "../interface.h"
 #include "../customer.h"
+#include "../cleanup.h"
 #include <menu.h>
 #include <curses.h>
 #include <unistd.h>
@@ -8,27 +9,21 @@
 
 Menu *create_menu(const char *choices[], const int num_choices){
  Menu *menu = malloc(sizeof(*menu) + sizeof(ITEM *) * num_choices);
-
  if(menu == NULL){
    return NULL;
  }
 
   set_items(menu->items, choices, num_choices);
 
-  MENU* my_menu = new_menu(menu->items);
-  menu->ptr = my_menu;
+  MENU* menu_ptr = new_menu(menu->items);
+  menu->ptr = menu_ptr;
   menu->num_choices = num_choices;
+
+  atexit_add(menu_ptr);
+  atexit_add(menu);
 
   return menu;
 }
-
-void free_Menu_obj(Menu *menu){
-  for(int i = 0; i < menu->num_choices; i++){
-    free(menu->items[i]);
-  }
-  free(menu->ptr);
-}
-
 
 Menu *create_main_menu(Win *main){ // check for null
   const char *choices[] = { "Shop", "Check Cart", "Checkout", "Exit" };
@@ -82,8 +77,11 @@ void set_items(ITEM *items[], const char *choices[], const int num_choices){
   for(int i = 0; i < num_choices; i++){
     items[i] = new_item(choices[i],NULL);
     set_item_userptr(items[i], menu_function[i]);
+    atexit_add(items[i]);
   }
+
   items[num_choices] = (ITEM *)NULL;
+  atexit_add(items[num_choices]);
 }
 
 

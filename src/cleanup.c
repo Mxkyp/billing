@@ -2,8 +2,8 @@
 #include <curses.h>
 #include <stdlib.h>
 
-void **vclean = NULL;
-size_t nclean = 0;
+void **vclean;
+size_t nclean;
 
 void atexit_add(void *data){
     vclean = realloc(vclean, sizeof(void *) * (nclean + 1));
@@ -16,9 +16,10 @@ void atexit_add(void *data){
 void clean(void){
     size_t i;
 
+    endwin();
     for (i = 0; i < nclean; i++) {
         free(vclean[i]);
     }
+
     free(vclean);
-    endwin();
 }
