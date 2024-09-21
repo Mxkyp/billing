@@ -22,7 +22,6 @@ Menu *create_menu(const char *choices[], const int num_choices){
   menu->num_choices = num_choices;
 
   atexit_add(menu);
-
   return menu;
 }
 

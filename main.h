@@ -2,7 +2,9 @@
 #define MAIN_H_
 #include "interface.h"
 
-void handle_win_menu(Win *win);
+typedef struct customer Customer;
+
+void handle_win_menu(Win *win, Customer *customer);
 void set_main_win(Win *main);
 
 

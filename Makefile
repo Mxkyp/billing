@@ -28,8 +28,8 @@ test.o: $(SRC)test.c
 billing: main.o customer.o product.o
 	$(CC) $(CFLAGS) -o billing.x main.o customer.o product.o && ./billing
 
-bill: main.o interface.o my_menus.o cleanup.o
-	$(CC) $(CFLAGS) -o bill.x main.o interface.o my_menus.o cleanup.o $(LIBS)
+bill: main.o interface.o my_menus.o cleanup.o customer.o product.o
+	$(CC) $(CFLAGS) -o bill.x main.o interface.o my_menus.o customer.o product.o cleanup.o $(LIBS)
 
 test: test.o
 	$(CC) $(CFLAGS) -o test.x test.o $(LIBS)

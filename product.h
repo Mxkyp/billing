@@ -2,6 +2,7 @@
 #define PRODUCT_H_
 
 typedef struct product Product;
+
 struct product{
   unsigned int price;
   unsigned int amount_of;

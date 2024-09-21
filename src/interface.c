@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <assert.h>
 
 //-fsanitize=address -fsanitize=undefined
 void initalize_curses_options(){
@@ -18,27 +19,21 @@ void initalize_curses_options(){
 
 Win* create_main_win(void){
   Win *main = malloc(sizeof(*main));
-
-  if(main == NULL){
-    return NULL;
-  }
+  assert(main);
 
   main->upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
   main->dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
   main->ptr = create_window(main->upper_left_corner, main->dimensions);
 
   set_input_options(main, false, true,false,false);
-  atexit_add(main);
 
+  atexit_add(main);
   return main;
 }
 
 Win *create_input_win(void){
   Win *input = malloc(sizeof(*input));
-
-  if(input == NULL){
-    return NULL;
-  }
+  assert(input);
 
   input->upper_left_corner = give_window_start_point(INPUT_Y, INPUT_X);
   input->dimensions = give_dimensions(INPUT_HEIGHT, INPUT_WIDTH);
