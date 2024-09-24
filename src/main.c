@@ -14,15 +14,15 @@ int main(void){
   initalize_curses_options();
   atexit(clean);
 
-  Win *main = create_main_win();
-  set_main_win(main);
+  Win main = init_main_win();
+  set_main_win(&main);
 
   Customer customer = init_customer();
 
-  handle_win_menu(main, &customer);
+  handle_win_menu(&main, &customer);
 
-  unpost_menu(main->menu->ptr);
-  free_menu(main->menu->ptr);
+  unpost_menu(main.menu->ptr);
+  free_menu(main.menu->ptr);
   return 0;
 }
 

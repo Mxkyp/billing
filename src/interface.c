@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <assert.h>
 
-//-fsanitize=address -fsanitize=undefined
 void initalize_curses_options(){
   initscr();
   echo();
@@ -17,31 +16,27 @@ void initalize_curses_options(){
   refresh();
 }
 
-Win* create_main_win(void){
-  Win *main = malloc(sizeof(*main));
-  assert(main);
+Win init_main_win(void){
+  Win main;
 
-  main->upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
-  main->dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
-  main->ptr = create_window(main->upper_left_corner, main->dimensions);
+  main.upper_left_corner = give_window_start_point(MAIN_Y, MAIN_X);
+  main.dimensions = give_dimensions(INTERFACE_HEIGHT, INTERFACE_WIDTH);
+  main.ptr = create_window(main.upper_left_corner, main.dimensions);
 
-  set_input_options(main, false, true,false,false);
+  set_input_options(&main, false, true,false,false);
 
-  atexit_add(main);
   return main;
 }
 
-Win *create_input_win(void){
-  Win *input = malloc(sizeof(*input));
-  assert(input);
+Win init_input_win(void){
+  Win input;
 
-  input->upper_left_corner = give_window_start_point(INPUT_Y, INPUT_X);
-  input->dimensions = give_dimensions(INPUT_HEIGHT, INPUT_WIDTH);
-  input->ptr = create_window(input->upper_left_corner, input->dimensions);
+  input.upper_left_corner = give_window_start_point(INPUT_Y, INPUT_X);
+  input.dimensions = give_dimensions(INPUT_HEIGHT, INPUT_WIDTH);
+  input.ptr = create_window(input.upper_left_corner, input.dimensions);
 
-  set_input_options(input, true, true, true, true);
+  set_input_options(&input, true, true, true, true);
 
-  atexit_add(input);
   return input;
 }
 

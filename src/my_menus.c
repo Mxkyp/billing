@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+
 Menu *create_menu(const char *choices[], const int num_choices){
  Menu *menu = malloc(sizeof(*menu));
  menu->items = malloc(sizeof(ITEM*) * (num_choices+1));
@@ -44,9 +45,21 @@ Menu *create_main_menu(Win *main){ // check for null
 
 void shop(ShoppingCart *cart){
   clear();
-  mvprintw(LINES/2, COLS/2, "SHOP");
+  refresh();
+  const char *choices2[] = {"a","b","c","d"};
+  const int num_choices = ARRAY_SIZE(choices2);
+  WINDOW *shop_win = newwin(LINES-4,COLS,0,0);
+
+  Menu *menu = create_menu(choices2, num_choices);
+
+  set_menu_windows(menu->ptr, shop_win, derwin(shop_win, 0, 0, 1, 1));
+  post_menu(menu->ptr);
+  wrefresh(shop_win);
   refresh();
   sleep(5);
+  unpost_menu(menu->ptr);
+  free_menu(menu->ptr);
+  free(menu);
 }
 
 void check_cart(ShoppingCart *cart){

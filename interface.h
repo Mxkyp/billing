@@ -53,8 +53,8 @@ typedef struct{
 
 void initalize_curses_options();
 
-Win* create_main_win(void);
-Win *create_dialog_win(void);
+Win init_main_win(void);
+Win init_input_win(void);
 void set_input_start(InputField* in_field);
 void set_main_content(Win* main);
 void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor);
