@@ -3,6 +3,7 @@
 #include "../my_menus.h"
 #include "../cleanup.h"
 #include "../customer.h"
+#include "../shop.h"
 #include <curses.h>
 #include <menu.h>
 #include <stdio.h>

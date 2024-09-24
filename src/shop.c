@@ -3,8 +3,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#define ELEM_SIZE 64
-#define MAX_ELEM_NUMBER 100
 
 // work on this
 unsigned int my_getline(const unsigned int max_size_with_null, char arr[max_size_with_null], FILE* file_ptr){
@@ -23,34 +21,40 @@ unsigned int my_getline(const unsigned int max_size_with_null, char arr[max_size
   return i;
 }
 
-char **scan_file(char *filename, int *scanned_elements){
+void set_shop_data(Shop* shop, char* data_filename){
   const unsigned int buff_size = ELEM_SIZE;
 
-  FILE *f = fopen(filename, "r");
-  assert(f);
+  FILE *file = fopen(data_filename, "r");
+  assert(file);
 
-  char **data = malloc(MAX_ELEM_NUMBER * sizeof(*data));
-  assert(data);
+  shop->data = malloc(MAX_ELEM_NUMBER * sizeof(*(shop->data)));
+  assert(shop->data);
 
   for(int i = 0; i < MAX_ELEM_NUMBER; i++){
-    data[i] = malloc(buff_size * sizeof(*data[i]));
-    assert(data[i]);
+    shop->data[i] = malloc(buff_size * sizeof(*(shop->data[i])));
+    assert(shop->data[i]);
   }
 
-  int data_counter;
-  for(data_counter = 0; data_counter < MAX_ELEM_NUMBER; data_counter++){
-    if(my_getline(buff_size, data[data_counter], f)){
-      printf("%s\n",data[data_counter]);
+  shop->scanned_items = scan_file_for_data(shop->data, buff_size, file);
+
+  free_unused_cells(shop->data, shop->scanned_items, MAX_ELEM_NUMBER);
+  fclose(file);
+}
+
+int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f){
+  int last_data_index;
+
+  for(last_data_index = 0; last_data_index < MAX_ELEM_NUMBER; last_data_index++){
+    if(my_getline(buff_size, data[last_data_index], f)){
+      printf("%s\n",data[last_data_index]);
     }
     else{
       break;
     }
   }
-  *scanned_elements = data_counter + 1;
 
-  free_unused_cells(data, *scanned_elements, MAX_ELEM_NUMBER);
-  fclose(f);
-  return data;
+  int data_elements = last_data_index + 1;
+  return data_elements;
 }
 
 void free_unused_cells(char** data, int scanned_elements, const int max_data_elements){
@@ -63,8 +67,7 @@ void free_unused_cells(char** data, int scanned_elements, const int max_data_ele
   }
 }
 
-
-void free_data(char** data, const int elem_number){
+void free_shop_data(char** data, const int elem_number){
   for(int i = 0; i < elem_number; i++){
     free(data[i]);
   }
