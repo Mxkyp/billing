@@ -13,6 +13,7 @@ struct product{
 
 typedef struct shop Shop;
 struct shop{
+  char *data_file_loc;
   char **data;
   int scanned_items;
 };
@@ -25,12 +26,12 @@ struct storeEntry{
 
 /*
   allocates memory for MAX_ELEMENTS_NUMBER strings to be saved in shop.data
-  reads the strings from a file with data_filename,
+  reads the strings from a file from shop.data_file_loc,
   saves them onto the shop.data array of pointers
   saves the number of strings into shop.scanned_items;
   then frees the unused space
  */
-void set_shop_data(Shop* shop, char* data_filename);
+void set_shop_data(Shop* shop);
 
 int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f);
 

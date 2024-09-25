@@ -4,27 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// work on this
-unsigned int my_getline(const unsigned int max_size_with_null, char arr[max_size_with_null], FILE* file_ptr){
-  int ch;
-  unsigned int i;
-  for(i = 0; i < max_size_with_null - 1; i++){
-    if((ch = fgetc(file_ptr)) != '\n' && ch != EOF){
-      arr[i] = ch;
-    }
-    else{
-      break;
-    }
-  }
 
-  arr[i] = '\0';
-  return i;
-}
-
-void set_shop_data(Shop* shop, char* data_filename){
+void set_shop_data(Shop* shop){
   const unsigned int buff_size = ELEM_SIZE;
 
-  FILE *file = fopen(data_filename, "r");
+  FILE *file = fopen(shop->data_file_loc, "r");
   assert(file);
 
   shop->data = malloc(MAX_ELEM_NUMBER * sizeof(*(shop->data)));
@@ -45,16 +29,29 @@ int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f){
   int last_data_index;
 
   for(last_data_index = 0; last_data_index < MAX_ELEM_NUMBER; last_data_index++){
-    if(my_getline(buff_size, data[last_data_index], f)){
-      printf("%s\n",data[last_data_index]);
+    if(my_getline(buff_size, data[last_data_index], f) == 0){
+      break;
+    }
+  }
+
+  int scanned_elements = last_data_index + 1;
+  return scanned_elements;
+}
+
+unsigned int my_getline(const unsigned int max_size_with_null, char arr[max_size_with_null], FILE* file_ptr){
+  int ch;
+  unsigned int i;
+  for(i = 0; i < max_size_with_null - 1; i++){
+    if((ch = fgetc(file_ptr)) != '\n' && ch != EOF){
+      arr[i] = ch;
     }
     else{
       break;
     }
   }
 
-  int data_elements = last_data_index + 1;
-  return data_elements;
+  arr[i] = '\0';
+  return i;
 }
 
 void free_unused_cells(char** data, int scanned_elements, const int max_data_elements){

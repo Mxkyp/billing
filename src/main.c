@@ -9,9 +9,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-
+#define EXPECTED_ARGC 2
+#define FILE_LOC 1
 
 int main(void){
+  //assert(argc == EXPECTED_ARGC);
   initalize_curses_options();
   atexit(clean);
 
@@ -26,6 +28,7 @@ int main(void){
   free_menu(main.menu->ptr);
   return 0;
 }
+
 
 
 void set_main_win(Win *main){

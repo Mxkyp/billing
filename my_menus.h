@@ -9,7 +9,9 @@
 
 Menu *create_main_menu(Win *main); // check for null
 
-void set_items(ITEM **items, const char *choices[], const int num_choices);
+Menu *create_menu(char **choices, const int num_choices);
+void set_main_menu_items(ITEM **items, char *choices[], const int num_choices);
+void set_items(ITEM **items, char *choices[], const int num_choices);
 
 void set_menu_windows(MENU *menu, WINDOW* main, WINDOW* sub);
 void free_Menu_obj(Menu *menu);

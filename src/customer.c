@@ -11,7 +11,7 @@ Customer init_customer(void){
 }
 
 void add_product(ShoppingCart *cart){
-  Product *last = NULL, *new = cart->product;
+  ProductBought *last = NULL, *new = cart->product;
 
   while(new != NULL){
     last = new;
