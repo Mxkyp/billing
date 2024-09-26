@@ -28,18 +28,6 @@ Win init_main_win(void){
   return main;
 }
 
-Win init_input_win(void){
-  Win input;
-
-  input.upper_left_corner = give_window_start_point(INPUT_Y, INPUT_X);
-  input.dimensions = give_dimensions(INPUT_HEIGHT, INPUT_WIDTH);
-  input.ptr = create_window(input.upper_left_corner, input.dimensions);
-
-  set_input_options(&input, true, true, true, true);
-
-  return input;
-}
-
 void set_main_content(Win* main){
   start_color();
   init_pair(TITLE_COLOR, COLOR_GREEN, COLOR_BLACK);
@@ -47,11 +35,6 @@ void set_main_content(Win* main){
                   0,main->dimensions.width,
                   "Shop", COLOR_PAIR(TITLE_COLOR));
   wrefresh(main->ptr);
-}
-
-void set_input_start(InputField* in_field){
-  in_field->user_input_start.y = INPUT_START_Y;
-  in_field->user_input_start.x = INPUT_START_X;
 }
 
 Point give_window_start_point(int y_wanted, int x_wanted){

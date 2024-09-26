@@ -54,18 +54,16 @@ typedef struct{
 void initalize_curses_options();
 
 Win init_main_win(void);
-Win init_input_win(void);
-void set_input_start(InputField* in_field);
 void set_main_content(Win* main);
 void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor);
 
 void switch_input_options(Win win);
 Point give_window_start_point(int y_wanted, int x_wanted);
 Dimensions give_dimensions(int h, int w);
-Point give_input_start();
 WINDOW* create_window(Point win_start, Dimensions dim);
+
+/*paints the default borders around the window, if specified calls a function to paint the windows details*/
+void paint_window(Win *win, void(*paint_details)(Win *win));
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
-
-
 
 #endif // MAIN_H_

@@ -1,59 +1,46 @@
-#include "../main.h"
 #include "../interface.h"
-#include "../my_menus.h"
 #include "../cleanup.h"
-#include "../customer.h"
 #include "../shop.h"
 #include <curses.h>
 #include <menu.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <unistd.h>
 #define EXPECTED_ARGC 2
 #define FILE_LOC 1
+
+void paint_window(Win *win, void(*paint_details)(Win *win)){
+  if(paint_details != NULL){
+    paint_details(win);
+  }
+  box(win->ptr, 0, 0);
+}
 
 int main(void){
   initalize_curses_options();
   atexit(clean);
 
   Win main = init_main_win();
-  set_main_win(&main);
+  set_main_content(&main);
 
-  Customer customer = init_customer();
+  wrefresh(main.ptr);
+  int ch;
+  while((ch = wgetch(main.ptr)) != 'o'){
+    switch(ch){
+      case 'c':
+              clear();
+              refresh();
+              break;
+      case 'p':
+              paint_window(&main, set_main_content);
+              break;
+    };
+  }
 
-  handle_win_menu(&main, &customer);
 
-  unpost_menu(main.menu->ptr);
-  free_menu(main.menu->ptr);
   return 0;
 }
 
 
 
-void set_main_win(Win *main){
-  set_main_content(main);
-  main->menu = create_main_menu(main);
-}
-
-void handle_win_menu(Win *win, Customer *customer){
-  int ch;
-  while((ch = wgetch(win->ptr)) != KEY_F(2)){
-    switch(ch)
-      { case KEY_DOWN:
-		        menu_driver(win->menu->ptr, REQ_DOWN_ITEM);
-      break;
-			case KEY_UP:
-				menu_driver(win->menu->ptr, REQ_UP_ITEM);
-				break;
-      case ENTER:
-        ITEM *cur;
-				void (*p)(ShoppingCart *);
-
-				cur = current_item(win->menu->ptr);
-				p = item_userptr(cur);
-				p(&customer->cart);
-				pos_menu_cursor(win->menu->ptr);
-				break;
-		};
-	}
-}
