@@ -1,6 +1,7 @@
 #include "../cleanup.h"
 #include <curses.h>
 #include <stdlib.h>
+#include <menu.h>
 
 void **vclean;
 size_t nclean;
@@ -19,6 +20,7 @@ void clean(void){
     for (i = 0; i < nclean; i++) {
         free(vclean[i]);
     }
+
     free(vclean);
     endwin();
 }

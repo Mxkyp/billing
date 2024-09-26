@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
+#define MENU_COLOR 9
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 void initalize_curses_options(){
   initscr();
@@ -30,11 +32,27 @@ Win init_main_win(void){
 
 void set_main_content(Win* main){
   start_color();
+
+  paint_main_header(main);
+  paint_main_menu(main);
+  wrefresh(main->ptr);
+}
+
+void paint_main_header(Win* main){
   init_pair(TITLE_COLOR, COLOR_GREEN, COLOR_BLACK);
   print_in_middle(main->ptr, 1,
                   0,main->dimensions.width,
                   "Shop", COLOR_PAIR(TITLE_COLOR));
-  wrefresh(main->ptr);
+}
+
+void paint_main_menu(Win *main){
+  init_pair(MENU_COLOR, COLOR_WHITE, COLOR_BLACK);
+  char *choices[] = {"[0] shop     ", "[1] check out", "[2] exit     "};
+
+  for(size_t i = 0, y_line = 4; i < ARRAY_SIZE(choices); i++, y_line+=2){
+  print_in_middle(main->ptr, y_line, 0, main->dimensions.width,
+                  choices[i], COLOR_PAIR(MENU_COLOR));
+  }
 }
 
 Point give_window_start_point(int y_wanted, int x_wanted){
@@ -101,6 +119,12 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width, char *strin
   refresh();
 }
 
+void paint_window(Win *win, void(*paint_details)(Win *win)){
+  if(paint_details != NULL){
+    paint_details(win);
+  }
+  box(win->ptr, 0, 0);
+}
 
 void switch_input_options(Win win){
   if(win.opt.echo){

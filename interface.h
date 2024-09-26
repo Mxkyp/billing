@@ -1,19 +1,12 @@
 #ifndef INTERFACE_H_
 #define INTERFACE_H_
 #include <curses.h>
-#include <menu.h>
 
 // window parameters
 #define INTERFACE_HEIGHT 12
 #define INTERFACE_WIDTH  26
 #define MAIN_Y (LINES - INTERFACE_HEIGHT)/2
 #define MAIN_X (COLS - INTERFACE_WIDTH)/2
-#define INPUT_START_X 1
-#define INPUT_START_Y LINES - 1
-#define INPUT_Y LINES - 2
-#define INPUT_X 0
-#define INPUT_HEIGHT 3
-#define INPUT_WIDTH COLS
 
 //Specific numbers
 #define TITLE_COLOR 1
@@ -32,29 +25,18 @@ typedef struct{
 }InputOptions;
 
 typedef struct{
- MENU *ptr;
- int num_choices;
- ITEM **items;
-}Menu;
-
-typedef struct{
   Point upper_left_corner;
   Dimensions dimensions;
   WINDOW *ptr;
   InputOptions opt;
-  Menu *menu;
 }Win;
-
-typedef struct{
- Point user_input_start;
- Win win;
- int input;
-}InputField;
 
 void initalize_curses_options();
 
 Win init_main_win(void);
 void set_main_content(Win* main);
+void paint_main_header(Win* main);
+void paint_main_menu(Win *main);
 void set_input_options(Win *new, bool want_echo, bool want_keypad, bool want_line_buffering, bool want_cursor);
 
 void switch_input_options(Win win);

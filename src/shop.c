@@ -5,10 +5,10 @@
 #include <string.h>
 
 
-void set_shop_data(Shop* shop){
+void set_shop_data(Shop* shop, const char* data_file_addr){
   const unsigned int buff_size = ELEM_SIZE;
 
-  FILE *file = fopen(shop->data_file_loc, "r");
+  FILE *file = fopen(data_file_addr, "r");
   assert(file);
 
   shop->data = malloc(MAX_ELEM_NUMBER * sizeof(*(shop->data)));
