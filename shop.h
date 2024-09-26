@@ -6,9 +6,9 @@
 
 typedef struct product Product;
 struct product{
-  float price;
-  long int code;
   char* name;
+  long int code;
+  double price;
 };
 
 typedef struct shop Shop;
@@ -16,13 +16,8 @@ struct shop{
   char *data_file_loc;
   char **data;
   int scanned_items;
+  Product *products;
 };
-
-typedef struct storeEntry StoreEntry;
-struct storeEntry{
-
-};
-
 
 /*
   allocates memory for MAX_ELEMENTS_NUMBER strings to be saved in shop.data

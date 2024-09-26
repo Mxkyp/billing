@@ -7,23 +7,35 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-
-Menu *create_menu(char *choices[], const int num_choices){
+Menu *create_menu(void){
  Menu *menu = malloc(sizeof(*menu));
- menu->items = (ITEM **)calloc(num_choices+1, sizeof(ITEM*));
 
  if(menu == NULL){
    return NULL;
  }
+
+  atexit_add(menu);
+  return menu;
+}
+
+void set_menu(Menu *menu, char* choices[], const int num_choices){
+  menu->items = (ITEM **)calloc(num_choices+1, sizeof(ITEM*));
 
   set_items(menu->items, choices, num_choices);
 
   MENU* menu_ptr = new_menu(menu->items);
   menu->ptr = menu_ptr;
   menu->num_choices = num_choices;
+}
 
-  atexit_add(menu);
-  return menu;
+void set_main_menu(Menu *menu, char* choices[], const int num_choices){
+  menu->items = (ITEM **)calloc(num_choices+1, sizeof(ITEM*));
+
+  set_main_menu_items(menu->items, choices, num_choices);
+
+  MENU* menu_ptr = new_menu(menu->items);
+  menu->ptr = menu_ptr;
+  menu->num_choices = num_choices;
 }
 
 Menu *create_main_menu(Win *main){ // check for null
@@ -31,8 +43,9 @@ Menu *create_main_menu(Win *main){ // check for null
   const int num_choices = ARRAY_SIZE(choices);
   WINDOW *subwindow = derwin(main->ptr, main->dimensions.height-5, 12, 4, 7);
 
-  Menu *menu = create_menu(choices, num_choices);
+  Menu *menu = create_menu();
 
+  set_main_menu(menu, choices, num_choices);
   set_menu_windows(menu->ptr, main->ptr, subwindow);
   set_menu_mark(menu->ptr,"+");
 
@@ -42,7 +55,7 @@ Menu *create_main_menu(Win *main){ // check for null
   return menu;
 }
 
-
+/* testing  */
 void shop(ShoppingCart *cart){
   clear();
   refresh();
@@ -50,15 +63,31 @@ void shop(ShoppingCart *cart){
   Shop shop;
   shop.data_file_loc = "./src/shop_data.txt";
   set_shop_data(&shop);
-  const int num_choices = shop.scanned_items;
+
   WINDOW *shop_win = newwin(LINES-4,COLS,0,0);
+  keypad(shop_win,TRUE);
+  cbreak();
+  noecho();
 
-  Menu *menu = create_menu(shop.data, num_choices);
-
+  Menu *menu = create_menu();
+  set_menu(menu, shop.data, shop.scanned_items);
   set_menu_windows(menu->ptr, shop_win, derwin(shop_win, 0, 0, 1, 1));
   post_menu(menu->ptr);
+
   wrefresh(shop_win);
   refresh();
+
+  int ch;
+  while((ch = wgetch(shop_win)) != KEY_F(2)){
+    switch(ch)
+      { case KEY_DOWN:
+		        menu_driver(menu->ptr, REQ_DOWN_ITEM);
+      break;
+			case KEY_UP:
+				menu_driver(menu->ptr, REQ_UP_ITEM);
+				break;
+		};
+	}
   sleep(5);
 
   unpost_menu(menu->ptr);

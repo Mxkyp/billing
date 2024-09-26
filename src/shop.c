@@ -70,3 +70,12 @@ void free_shop_data(char** data, const int elem_number){
   }
   free(data);
 }
+
+/*
+void set_products_from_data(Shop *shop){
+  shop->products = malloc(sizeof(Product) * shop->scanned_items);
+  assert(shop->products);
+
+
+}
+*/

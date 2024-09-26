@@ -13,7 +13,6 @@
 #define FILE_LOC 1
 
 int main(void){
-  //assert(argc == EXPECTED_ARGC);
   initalize_curses_options();
   atexit(clean);
 
