@@ -1,8 +1,43 @@
 #include "../shop.h"
+#include "../cleanup.h"
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#define NUM_PRODUCT_PARAMS 3
+#define TEMP_SIZE 30
+#define NAME 0
+#define LONG_CODE 1
+#define PRICE 2
+void set_products_from_data(Shop *shop){
+  shop->products = malloc(shop->scanned_items * sizeof(Product));
+  assert(shop->products);
+  char temp_name[TEMP_SIZE];
+  char temp_long_code[TEMP_SIZE];
+  char temp_price[TEMP_SIZE];
+
+  for(int i = 0; i < shop->scanned_items; i++){
+       char *received = strtok(shop->data[i],":");
+       while(received){
+         printf("%s ", received);
+         received = strtok(NULL,":");
+       }
+       printf("\n");
+      }
+      //memccpy(cur_setting, received,'\0', TEMP_SIZE);
+      /*
+      if(param == NAME){
+        memccpy(shop->products[i].name, cur_setting,'\0', TEMP_SIZE);
+      }
+      else if(param == LONG_CODE){
+        shop->products[i]
+      }
+      else if(param == PRICE){
+        cur_setting = temp_price;
+      }
+      */
+  free(shop->products);
+}
 
 
 void set_shop_data(Shop* shop, const char* data_file_addr){
@@ -11,18 +46,25 @@ void set_shop_data(Shop* shop, const char* data_file_addr){
   FILE *file = fopen(data_file_addr, "r");
   assert(file);
 
-  shop->data = malloc(MAX_ELEM_NUMBER * sizeof(*(shop->data)));
+  shop->data = create_array_of_strings(MAX_ELEM_NUMBER, buff_size);
   assert(shop->data);
-
-  for(int i = 0; i < MAX_ELEM_NUMBER; i++){
-    shop->data[i] = malloc(buff_size * sizeof(*(shop->data[i])));
-    assert(shop->data[i]);
-  }
 
   shop->scanned_items = scan_file_for_data(shop->data, buff_size, file);
 
   free_unused_cells(shop->data, shop->scanned_items, MAX_ELEM_NUMBER);
   fclose(file);
+}
+
+char** create_array_of_strings(const int number_of_strings, const int max_string_length){
+  char **array_of_strings = malloc(number_of_strings * sizeof(char *));
+  if(array_of_strings == NULL){ return NULL; }
+
+  for(int i = 0; i < number_of_strings; i++){
+    array_of_strings[i] = malloc(max_string_length * sizeof(char));
+    if(array_of_strings[i] == NULL){ return NULL; }
+  }
+
+  return array_of_strings;
 }
 
 int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f){

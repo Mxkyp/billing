@@ -3,10 +3,11 @@
 #include <stdio.h>
 #define ELEM_SIZE 64
 #define MAX_ELEM_NUMBER 100
+#define MAX_NAME 30
 
 typedef struct product Product;
 struct product{
-  char* name;
+  char name[MAX_NAME];
   long int code;
   double price;
 };
@@ -21,12 +22,13 @@ struct shop{
 
 /*
   allocates memory for MAX_ELEMENTS_NUMBER strings to be saved in shop.data
-  reads the strings from a file from shop.data_file_loc,
+  reads the strings from the file with address == data_file_addr
   saves them onto the shop.data array of pointers
   saves the number of strings into shop.scanned_items;
   then frees the unused space
  */
-void set_shop_data(Shop* shop);
+void set_shop_data(Shop* shop, const char* data_file_addr);
+void set_products_from_data(Shop *shop);
 
 int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f);
 
@@ -35,6 +37,11 @@ int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f);
   returns the amount of characters read;
  */
 unsigned int my_getline(const unsigned int max_size_with_null, char arr[max_size_with_null], FILE* file_ptr);
+
+/*
+ * returns NULL on failure;
+*/
+char** create_array_of_strings(const int number_of_strings, const int max_string_length);
 
 /*
   frees unused elements

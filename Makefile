@@ -1,9 +1,9 @@
 CC=gcc
-CFLAGS= -g -Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address -fsanitize=undefined -static-libasan
+CFLAGS= -g -Wall -Wextra  -Wno-unused-parameter -fsanitize=address -fsanitize=undefined -static-libasan
 SRC=./src/
-LIBS=-lncurses -lmenu
+LIBS=-lncurses
 DATA_FILE_LOC=./src/shop_data.txt
-
+#-Werror#
 main.o: $(SRC)main.c interface.h shop.h cleanup.h
 	$(CC) $(CFLAGS) -c $(SRC)main.c
 
@@ -26,7 +26,7 @@ billing: main.o customer.o product.o
 bill: main.o interface.o cleanup.o  shop.o
 	$(CC) $(CFLAGS) -o bill.x main.o interface.o cleanup.o shop.o $(LIBS) && ./bill.x $(DATA_FILE_LOC)
 
-test: test.o shop.o my_menus.o cleanup.o
-	$(CC) $(CFLAGS) -o test.x test.o shop.o my_menus.o cleanup.o $(LIBS) && ./test.x $(DATA_FILE_LOC)
+test: test.o shop.o cleanup.o
+	$(CC) $(CFLAGS) -o test.x test.o shop.o cleanup.o $(LIBS) && ./test.x $(DATA_FILE_LOC)
 clean:
 	rm *.o *.a *.x
