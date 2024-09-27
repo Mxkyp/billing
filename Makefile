@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS= -g -Wall -Wextra  -Wno-unused-parameter -fsanitize=address -fsanitize=undefined -static-libasan
 SRC=./src/
-LIBS=-lncurses
+LIBS=-lncurses -lmenu
 DATA_FILE_LOC=./src/shop_data.txt
 #-Werror#
 main.o: $(SRC)main.c interface.h shop.h cleanup.h
