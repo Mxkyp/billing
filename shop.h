@@ -3,7 +3,7 @@
 #include <stdio.h>
 #define ELEM_SIZE 64
 #define MAX_ELEM_NUMBER 100
-#define MAX_NAME 30
+#define MAX_NAME 128
 
 typedef struct product Product;
 struct product{

@@ -9,34 +9,27 @@
 #define NAME 0
 #define LONG_CODE 1
 #define PRICE 2
+
 void set_products_from_data(Shop *shop){
   shop->products = malloc(shop->scanned_items * sizeof(Product));
   assert(shop->products);
-  char temp_name[TEMP_SIZE];
-  char temp_long_code[TEMP_SIZE];
-  char temp_price[TEMP_SIZE];
 
   for(int i = 0; i < shop->scanned_items; i++){
        char *received = strtok(shop->data[i],":");
-       while(received){
-         printf("%s ", received);
+
+       for(int param = NAME; received; param++){
+         switch(param){
+           case NAME: strcpy(shop->products[i].name, received);
+             break;
+           case LONG_CODE: shop->products[i].code = atol(received);
+             break;
+           case PRICE: shop->products[i].price = atof(received);
+             break;
+         };
          received = strtok(NULL,":");
        }
-       printf("\n");
-      }
-      //memccpy(cur_setting, received,'\0', TEMP_SIZE);
-      /*
-      if(param == NAME){
-        memccpy(shop->products[i].name, cur_setting,'\0', TEMP_SIZE);
-      }
-      else if(param == LONG_CODE){
-        shop->products[i]
-      }
-      else if(param == PRICE){
-        cur_setting = temp_price;
-      }
-      */
-  free(shop->products);
+  }
+
 }
 
 
@@ -68,15 +61,14 @@ char** create_array_of_strings(const int number_of_strings, const int max_string
 }
 
 int scan_file_for_data(char **data, const unsigned int buff_size, FILE *f){
-  int last_data_index;
+  int scanned_elements;
 
-  for(last_data_index = 0; last_data_index < MAX_ELEM_NUMBER; last_data_index++){
-    if(my_getline(buff_size, data[last_data_index], f) == 0){
+  for(scanned_elements = 0; scanned_elements < MAX_ELEM_NUMBER; scanned_elements++){
+    if(my_getline(buff_size, data[scanned_elements], f) == 0){
       break;
     }
   }
 
-  int scanned_elements = last_data_index + 1;
   return scanned_elements;
 }
 
