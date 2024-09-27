@@ -1,9 +1,9 @@
 #ifndef SHOP_H_
 #define SHOP_H_
 #include <stdio.h>
-#define ELEM_SIZE 64
-#define MAX_ELEM_NUMBER 100
-#define MAX_NAME 128
+#define ELEM_SIZE 128
+#define MAX_ELEM_NUMBER 128
+#define MAX_NAME 64
 
 typedef struct product Product;
 struct product{
