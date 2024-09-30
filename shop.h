@@ -23,7 +23,8 @@ struct shop{
 typedef struct customer Customer;
 struct customer{
   Product products[MAX_PRODUCTS];
-  unsigned int product_amount[MAX_PRODUCTS];
+  unsigned int product_quanity[MAX_PRODUCTS];
+  unsigned int distinct_product_counter;
 };
 
 /*

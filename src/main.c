@@ -9,9 +9,11 @@
 #include <string.h>
 #include <unistd.h>
 #define EXPECTED_ARGC 2
+#define NOT_FOUND -1
 #define FILE_LOC 1
 #define ESC 27
 #define ENTER 10
+#define TIME 150000
 
 #define SHOP '0'
 #define CHECKOUT '1'
@@ -19,8 +21,22 @@
 
 void restructure_shop_data(Shop *shop);
 void set_up_shop(Shop *shop);
-int main_menu_driver(Win* main, Shop* shop);
-void do_shopping(Shop *shop);
+int main_menu_driver(Win* main, Shop* shop, Customer *customer);
+void do_shopping(Shop *shop, Customer *customer);
+
+/*
+  checksout the customer, prints the shoping summary, and allows him to pay
+ */
+void checkout(Customer *customer);
+/*
+  prints all the items bought by the customer, and the total cost
+ */
+void print_summary(Customer *customer);
+
+//checks if a product with a given code is already in cart, if yes, increase its quanity by one
+//else add it, and increments the counter of unique products
+void assign_item_to_customer(ITEM* picked, Customer *customer);
+int search_for_code(long int searched_code, int n, Product bought[n]);
 
 
 int main(void){
@@ -33,7 +49,9 @@ int main(void){
   Shop shop;
   set_up_shop(&shop);
 
-  main_menu_driver(&main, &shop);
+  Customer customer = {.product_quanity = {0}, .distinct_product_counter = 0};
+
+  main_menu_driver(&main, &shop, &customer);
 
   free(shop.products);
   free_shop_data(shop.data, shop.scanned_items);
@@ -41,26 +59,6 @@ int main(void){
 }
 
 
-int main_menu_driver(Win* main, Shop* shop){
-  int ch;
-
-  while((ch = wgetch(main->ptr)) != EXIT){
-    clear();
-    refresh();
-
-    switch(ch){
-      case SHOP: do_shopping(shop);
-        break;
-      case CHECKOUT:
-        break;
-    };
-
-    clear();
-    paint_window(main, set_main_content);
-    refresh();
-  }
-  return 0;
-}
 
 void set_up_shop(Shop *shop){
   set_shop_data(shop, "./src/shop_data.txt");
@@ -74,12 +72,34 @@ void restructure_shop_data(Shop *shop){
   }
 }
 
-void do_shopping(Shop *shop){
+int main_menu_driver(Win* main, Shop* shop, Customer *customer){
+  int ch;
+
+  while((ch = wgetch(main->ptr)) != EXIT){
+    clear();
+    refresh();
+
+    switch(ch){
+      case SHOP: do_shopping(shop, customer);
+        break;
+      case CHECKOUT: checkout(customer);
+        break;
+    };
+
+    clear();
+    paint_window(main, set_main_content);
+    refresh();
+  }
+  return 0;
+}
+
+void do_shopping(Shop *shop, Customer *customer){
    ITEM **my_items;
    MENU *my_menu;
 
 	my_items = (ITEM **)calloc(shop->scanned_items + 1, sizeof(ITEM *));
  //seperate into an new function
+
 	for(int i = 0; i < shop->scanned_items; i++){
 	        my_items[i] = new_item(shop->data[i],NULL);
           set_item_userptr(my_items[i], &shop->products[i]);
@@ -92,6 +112,7 @@ void do_shopping(Shop *shop){
 
   int c;
 	while((c = wgetch(stdscr)) != ESC){
+    delay_output(250);
     switch(c){
       case KEY_DOWN:
 		        menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -107,12 +128,15 @@ void do_shopping(Shop *shop){
         break;
       case ENTER:
          ITEM *cur;
-        /*add adding to cart*/
+         cur = current_item(my_menu);
+         assign_item_to_customer(cur, customer);
+         pos_menu_cursor(my_menu);
         break;
       default:
         menu_driver(my_menu, c);
         break;
 		};
+    flushinp();
 	}
 
   refresh();
@@ -122,4 +146,56 @@ void do_shopping(Shop *shop){
     free_item(my_items[i]);
   }
   free(my_items);
+}
+
+/*
+void set_items_array(int number_of_items, ITEM **items, char** item_data){
+
+}
+*/
+
+void checkout(Customer *customer){
+  clear();
+  refresh();
+  print_summary(customer);
+  refresh();
+  sleep(5);
+}
+
+
+void assign_item_to_customer(ITEM* picked, Customer *customer){
+  Product *picked_product = (Product*)item_userptr(picked);
+  int index = search_for_code(picked_product->code, customer->distinct_product_counter, customer->products);
+
+  if(index == NOT_FOUND){
+    customer->product_quanity[customer->distinct_product_counter]++;
+    customer->products[customer->distinct_product_counter++] = *(Product*)item_userptr(picked);
+
+  }
+  else{
+    customer->product_quanity[index]++;
+  }
+}
+
+int search_for_code(long int searched_code, int n, Product bought[n]){
+  for(int i = 0; i < n; i++){
+    if(bought[i].code == searched_code){
+      return i;
+    }
+  }
+  return NOT_FOUND;
+}
+
+void print_summary(Customer *customer){
+  double total_cost = 0;
+  wprintw(stdscr,"%-40s %-11s %-7s %-10s %-10s\n","PRODUCT NAME", "CODE","QUANITY", "UNIT PRICE", "TOTAL COST");
+
+  for(unsigned int i = 0; i < customer->distinct_product_counter; i++){
+    wprintw(stdscr,"%-40s %-11ld %-7u %-10.3lf %-10.3lf\n",customer->products[i].name, customer->products[i].code, customer->product_quanity[i],
+                                                           customer->products[i].price, customer->products[i].price * customer->product_quanity[i]);
+    total_cost += customer->products[i].price * customer->product_quanity[i];
+  }
+
+  wprintw(stdscr,"%-40s %-11s %-7s %-10s %-10lf","", "","","SUM: ", total_cost);
+
 }
