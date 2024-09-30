@@ -23,6 +23,7 @@ void restructure_shop_data(Shop *shop);
 void set_up_shop(Shop *shop);
 int main_menu_driver(Win* main, Shop* shop, Customer *customer);
 void do_shopping(Shop *shop, Customer *customer);
+void set_items_array( ITEM **items, Shop* shop);
 
 /*
   checksout the customer, prints the shoping summary, and allows him to pay
@@ -98,13 +99,8 @@ void do_shopping(Shop *shop, Customer *customer){
    MENU *my_menu;
 
 	my_items = (ITEM **)calloc(shop->scanned_items + 1, sizeof(ITEM *));
- //seperate into an new function
 
-	for(int i = 0; i < shop->scanned_items; i++){
-	        my_items[i] = new_item(shop->data[i],NULL);
-          set_item_userptr(my_items[i], &shop->products[i]);
-  }
-	my_items[shop->scanned_items] = (ITEM *)NULL;
+  set_items_array(my_items, shop);
 
 	my_menu = new_menu((ITEM **)my_items);
 	post_menu(my_menu);
@@ -112,7 +108,7 @@ void do_shopping(Shop *shop, Customer *customer){
 
   int c;
 	while((c = wgetch(stdscr)) != ESC){
-    delay_output(250);
+    usleep(TIME);
     switch(c){
       case KEY_DOWN:
 		        menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -148,11 +144,13 @@ void do_shopping(Shop *shop, Customer *customer){
   free(my_items);
 }
 
-/*
-void set_items_array(int number_of_items, ITEM **items, char** item_data){
-
+void set_items_array(ITEM **items, Shop* shop){
+	for(int i = 0; i < shop->scanned_items; i++){
+	        items[i] = new_item(shop->data[i], NULL);
+          set_item_userptr(items[i], &shop->products[i]);
+  }
+	items[shop->scanned_items] = (ITEM *)NULL;
 }
-*/
 
 void checkout(Customer *customer){
   clear();
@@ -196,6 +194,6 @@ void print_summary(Customer *customer){
     total_cost += customer->products[i].price * customer->product_quanity[i];
   }
 
-  wprintw(stdscr,"%-40s %-11s %-7s %-10s %-10lf","", "","","SUM: ", total_cost);
+  wprintw(stdscr,"%-40s %-11s %-7s %-10s %-10.3lf","", "","","SUM: ", total_cost);
 
 }
