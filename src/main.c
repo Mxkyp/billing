@@ -12,6 +12,7 @@
 #define FILE_LOC 1
 #define ESC 27
 #define ENTER 10
+
 #define SHOP '0'
 #define CHECKOUT '1'
 #define EXIT '2'
@@ -78,7 +79,7 @@ void do_shopping(Shop *shop){
    MENU *my_menu;
 
 	my_items = (ITEM **)calloc(shop->scanned_items + 1, sizeof(ITEM *));
-
+ //seperate into an new function
 	for(int i = 0; i < shop->scanned_items; i++){
 	        my_items[i] = new_item(shop->data[i],NULL);
           set_item_userptr(my_items[i], &shop->products[i]);
@@ -91,8 +92,8 @@ void do_shopping(Shop *shop){
 
   int c;
 	while((c = wgetch(stdscr)) != ESC){
-    switch(c)
-	    {	case KEY_DOWN:
+    switch(c){
+      case KEY_DOWN:
 		        menu_driver(my_menu, REQ_DOWN_ITEM);
 				break;
 			case KEY_UP:
@@ -105,7 +106,8 @@ void do_shopping(Shop *shop){
         menu_driver(my_menu, REQ_CLEAR_PATTERN);
         break;
       case ENTER:
-        /*add adding to shop */
+         ITEM *cur;
+        /*add adding to cart*/
         break;
       default:
         menu_driver(my_menu, c);

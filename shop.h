@@ -4,7 +4,7 @@
 #define ELEM_SIZE 128
 #define MAX_ELEM_NUMBER 128
 #define MAX_NAME 64
-
+#define MAX_PRODUCTS 100
 typedef struct product Product;
 struct product{
   char name[MAX_NAME];
@@ -18,6 +18,12 @@ struct shop{
   char **data;
   int scanned_items;
   Product *products;
+};
+
+typedef struct customer Customer;
+struct customer{
+  Product products[MAX_PRODUCTS];
+  unsigned int product_amount[MAX_PRODUCTS];
 };
 
 /*
